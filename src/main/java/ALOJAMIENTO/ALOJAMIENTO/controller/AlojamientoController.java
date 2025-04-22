@@ -1,7 +1,7 @@
-package Alojamiento1.Alojamiento1.controller;
+package ALOJAMIENTO.ALOJAMIENTO.controller;
 
-import Alojamiento1.Alojamiento1.model.*;
-import Alojamiento1.Alojamiento1.repository.*;
+import ALOJAMIENTO.ALOJAMIENTO.model.*;
+import ALOJAMIENTO.ALOJAMIENTO.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
