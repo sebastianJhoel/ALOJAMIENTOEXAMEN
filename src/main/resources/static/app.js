@@ -1,96 +1,174 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>ALOJAMIENTO1</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-<h1>ALOJAMIENTO</h1>
+const API_URL = "http://localhost:8080/api"; // Ajusta el puerto si es diferente
 
-<div class="container">
-    <button class="toggle-btn" onclick="toggleDarkMode()">🌓 Modo Oscuro</button>
-    <!-- Panel Izquierdo: Formularios -->
-    <div class="panel-izquierdo">
-        <!-- Sección: Agregar Piso -->
-        <section>
-            <h2>Agregar Piso</h2>
-            <form id="pisoForm">
-                <input type="number" id="numeroPiso" placeholder="Número de Piso" required>
-                <button type="submit">Agregar Piso</button>
-            </form>
-        </section>
+document.addEventListener("DOMContentLoaded", () => {
+    cargarClientes();
+    cargarEmpleados();
+    cargarPisos();
+    cargarHabitaciones();
 
-        <!-- Sección: Agregar Habitación -->
-        <section>
-            <h2>Agregar Habitación</h2>
-            <form id="habitacionForm">
-                <input type="number" id="numeroHabitacion" placeholder="Número de Habitación" required>
-                <input type="number" id="habitacionPisoId" placeholder="ID de Piso al que pertenece" required>
-                <button type="submit">Agregar Habitación</button>
-            </form>
-        </section>
+    document.getElementById("clienteForm").addEventListener("submit", crearCliente);
+    document.getElementById("empleadoForm").addEventListener("submit", crearEmpleado);
 
-        <!-- Sección: Agregar Cliente -->
-        <section>
-            <h2>Agregar Cliente</h2>
-            <form id="clienteForm">
-                <input type="text" id="clienteNombre" placeholder="Nombre" required>
-                <input type="text" id="clienteIdentificacion" placeholder="Identificación" required>
-                <input type="text" id="clienteTelefono" placeholder="Teléfono" required>
-                <input type="number" id="clientePiso" placeholder="ID de Piso" required>
-                <input type="number" id="clienteHabitacion" placeholder="ID de Habitación" required>
-                <button type="submit">Agregar Cliente</button>
-            </form>
-        </section>
+});
 
-        <!-- Sección: Agregar Empleado -->
-        <section>
-            <h2>Agregar Empleado</h2>
-            <form id="empleadoForm">
-                <input type="text" id="empleadoNombre" placeholder="Nombre" required>
-                <input type="text" id="empleadoIdentificacion" placeholder="Identificación" required>
-                <input type="text" id="empleadoTelefono" placeholder="Teléfono" required>
-                <input type="number" id="empleadoClienteId" placeholder="ID Cliente Asignado" required>
-                <button type="submit">Agregar Empleado</button>
-            </form>
-        </section>
-    </div>
+// ======================== CLIENTES =========================
 
-    <!-- Panel Derecho: Resultados -->
-    <div class="panel-derecho">
-        <!-- Lista de Pisos -->
-        <section>
-            <h2>Pisos Registrados</h2>
-            <div id="pisosLista"></div>
-        </section>
+function cargarClientes() {
+    fetch(`${API_URL}/clientes`)
+        .then(res => res.json())
+        .then(clientes => {
+            const contenedor = document.getElementById("clientesLista");
+            contenedor.innerHTML = "";
+            clientes.forEach(cliente => {
+                const div = document.createElement("div");
+                div.className = "card";
+                div.innerHTML = `
+                    <p><strong>Nombre:</strong> ${cliente.nombre}</p>
+                    <p><strong>ID:</strong> ${cliente.identificacion}</p>
+                    <p><strong>Teléfono:</strong> ${cliente.telefono}</p>
+                    <p><strong>Piso ID:</strong> ${cliente.piso.id}</p>
+                    <p><strong>Habitación ID:</strong> ${cliente.habitacion.id}</p>
+                `;
+                contenedor.appendChild(div);
+            });
+        });
+}
 
-        <!-- Lista de Habitaciones -->
-        <section>
-            <h2>Habitaciones Registradas</h2>
-            <div id="habitacionesLista"></div>
-        </section>
+function crearCliente(e) {
+    e.preventDefault();
 
-        <!-- Lista de Clientes -->
-        <section>
-            <h2>Clientes Registrados</h2>
-            <div id="clientesLista"></div>
-        </section>
+    const cliente = {
+        nombre: document.getElementById("clienteNombre").value,
+        identificacion: document.getElementById("clienteIdentificacion").value,
+        telefono: document.getElementById("clienteTelefono").value,
+        piso: { id: parseInt(document.getElementById("clientePiso").value) },
+        habitacion: { id: parseInt(document.getElementById("clienteHabitacion").value) }
+    };
 
-        <!-- Lista de Empleados -->
-        <section>
-            <h2>Empleados Registrados</h2>
-            <div id="empleadosLista"></div>
-        </section>
-    </div>
-</div>
-<script>
-    function toggleDarkMode() {
-        document.body.classList.toggle("dark");
-    }
-</script>
+    fetch(`${API_URL}/clientes`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(cliente)
+    }).then(() => {
+        document.getElementById("clienteForm").reset();
+        cargarClientes();
+    });
+}
 
-<script src="app.js"></script>
+// ======================== EMPLEADOS =========================
 
-</body>
-</html>
+function cargarEmpleados() {
+    fetch(`${API_URL}/empleados`)
+        .then(res => res.json())
+        .then(empleados => {
+            const contenedor = document.getElementById("empleadosLista");
+            contenedor.innerHTML = "";
+            empleados.forEach(empleado => {
+                const div = document.createElement("div");
+                div.className = "card";
+                div.innerHTML = `
+                    <p><strong>Nombre:</strong> ${empleado.nombre}</p>
+                    <p><strong>ID:</strong> ${empleado.identificacion}</p>
+                    <p><strong>Teléfono:</strong> ${empleado.telefono}</p>
+                    <p><strong>Cliente Asignado:</strong> ${empleado.cliente ? empleado.cliente.nombre : "Ninguno"}</p>
+                `;
+                contenedor.appendChild(div);
+            });
+        });
+}
+
+function crearEmpleado(e) {
+    e.preventDefault();
+
+    const empleado = {
+        nombre: document.getElementById("empleadoNombre").value,
+        identificacion: document.getElementById("empleadoIdentificacion").value,
+        telefono: document.getElementById("empleadoTelefono").value,
+        cliente: { id: parseInt(document.getElementById("empleadoClienteId").value) }
+    };
+
+    fetch(`${API_URL}/empleados`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(empleado)
+    }).then(() => {
+        document.getElementById("empleadoForm").reset();
+        cargarEmpleados();
+    });
+}
+
+// ======================== PISOS =========================
+
+document.getElementById("pisoForm").addEventListener("submit", crearPiso);
+
+function cargarPisos() {
+    fetch(`${API_URL}/pisos`)
+        .then(res => res.json())
+        .then(pisos => {
+            const contenedor = document.getElementById("pisosLista");
+            contenedor.innerHTML = "";
+            pisos.forEach(piso => {
+                const div = document.createElement("div");
+                div.className = "card";
+                div.innerHTML = `
+                    <p><strong>ID:</strong> ${piso.id}</p>
+                    <p><strong>Número de Piso:</strong> ${piso.numero}</p>
+                `;
+                contenedor.appendChild(div);
+            });
+        });
+}
+
+function crearPiso(e) {
+    e.preventDefault();
+    const piso = { numero: parseInt(document.getElementById("numeroPiso").value) };
+
+    fetch(`${API_URL}/pisos`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(piso)
+    }).then(() => {
+        document.getElementById("pisoForm").reset();
+        cargarPisos();
+    });
+}
+
+// ======================== HABITACIONES =========================
+
+document.getElementById("habitacionForm").addEventListener("submit", crearHabitacion);
+
+function cargarHabitaciones() {
+    fetch(`${API_URL}/habitaciones`)
+        .then(res => res.json())
+        .then(habitaciones => {
+            const contenedor = document.getElementById("habitacionesLista");
+            contenedor.innerHTML = "";
+            habitaciones.forEach(habitacion => {
+                const div = document.createElement("div");
+                div.className = "card";
+                div.innerHTML = `
+                    <p><strong>ID:</strong> ${habitacion.id}</p>
+                    <p><strong>Número:</strong> ${habitacion.numero}</p>
+                    <p><strong>Piso ID:</strong> ${habitacion.piso.id}</p>
+                `;
+                contenedor.appendChild(div);
+            });
+        });
+}
+
+function crearHabitacion(e) {
+    e.preventDefault();
+    const habitacion = {
+        numero: parseInt(document.getElementById("numeroHabitacion").value),
+        piso: { id: parseInt(document.getElementById("habitacionPisoId").value) }
+    };
+
+    fetch(`${API_URL}/habitaciones`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(habitacion)
+    }).then(() => {
+        document.getElementById("habitacionForm").reset();
+        cargarHabitaciones();
+    });
+}
