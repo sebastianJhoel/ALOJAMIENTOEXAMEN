@@ -94,19 +94,19 @@ public class AlojamientoController {
     // ===================== EMPLEADO =====================
 
     @GetMapping("/empleados")
-    public List<Empleado> getEmpleados() {
+    public List<ALOJAMIENTO.ALOJAMIENTO.model.Empleado> getEmpleados() {
         return empleadoRepository.findAll();
     }
 
     @GetMapping("/empleados/{id}")
-    public ResponseEntity<Empleado> getEmpleadoById(@PathVariable Long id) {
+    public ResponseEntity<ALOJAMIENTO.ALOJAMIENTO.model.Empleado> getEmpleadoById(@PathVariable Long id) {
         return empleadoRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("/empleados")
-    public Empleado crearEmpleado(@RequestBody Empleado empleado) {
+    public ALOJAMIENTO.ALOJAMIENTO.model.Empleado crearEmpleado(@RequestBody ALOJAMIENTO.ALOJAMIENTO.model.Empleado empleado) {
         // Asignar al cliente automáticamente (ejemplo simple)
         List<Cliente> clientes = clienteRepository.findAll();
         if (!clientes.isEmpty()) {
@@ -117,7 +117,7 @@ public class AlojamientoController {
     }
 
     @PutMapping("/empleados/{id}")
-    public ResponseEntity<Empleado> updateEmpleado(@PathVariable Long id, @RequestBody Empleado empleado) {
+    public ResponseEntity<ALOJAMIENTO.ALOJAMIENTO.model.Empleado> updateEmpleado(@PathVariable Long id, @RequestBody ALOJAMIENTO.ALOJAMIENTO.model.Empleado empleado) {
         return empleadoRepository.findById(id).map(e -> {
             e.setNombre(empleado.getNombre());
             e.setIdentificacion(empleado.getIdentificacion());
@@ -127,7 +127,7 @@ public class AlojamientoController {
     }
 
     @PatchMapping("/empleados/{id}")
-    public ResponseEntity<Empleado> patchEmpleado(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
+    public ResponseEntity<ALOJAMIENTO.ALOJAMIENTO.model.Empleado> patchEmpleado(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
         return empleadoRepository.findById(id).map(empleado -> {
             if (updates.containsKey("nombre")) empleado.setNombre((String) updates.get("nombre"));
             if (updates.containsKey("identificacion")) empleado.setIdentificacion((String) updates.get("identificacion"));

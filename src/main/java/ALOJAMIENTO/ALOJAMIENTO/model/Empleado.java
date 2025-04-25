@@ -9,7 +9,6 @@ public class Empleado {
     private Long id;
 
     private String nombre;
-    private String rol;
     private String identificacion;
     private String telefono;
 
@@ -20,9 +19,9 @@ public class Empleado {
     // Constructores
     public Empleado() {}
 
-    public Empleado(String nombre, String rol, String identificacion, String telefono, Cliente cliente) {
+    public Empleado(String nombre, String identificacion, String telefono, Cliente cliente) {
         this.nombre = nombre;
-        this.rol = rol;
+
         this.identificacion = identificacion;
         this.telefono = telefono;
         this.cliente = cliente;
@@ -35,8 +34,7 @@ public class Empleado {
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public String getRol() { return rol; }
-    public void setRol(String rol) { this.rol = rol; }
+
 
     public String getIdentificacion() { return identificacion; }
     public void setIdentificacion(String identificacion) { this.identificacion = identificacion; }
